@@ -1,0 +1,4 @@
+ansible_host: 10.0.0.4
+hostname: SW-ACCESS-1
+role: ACCESS
+mgmt_ip_address: 10.0.0.4

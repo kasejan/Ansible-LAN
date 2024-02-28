@@ -1,0 +1,6 @@
+{% for vlan in vlans.list %}
+  vlan {{ vlan.ID }}
+  {% if vlan.NAME != "" %}
+    name {{ vlan.NAME }}
+  {% endif %}
+{% endfor %}

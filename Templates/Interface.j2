@@ -1,0 +1,92 @@
+{% set interface_list = [] %}
+
+{% for interface in interfaces.list %}
+  
+{% set interface_config = {"name": "",
+                           "type": "",
+                           "status": "",
+                           "vlan": "",
+                           "description": "",
+                           "is_etherchannel": False,
+                           "etherchannel_number": 0,
+                           "etherchannel_protocol": ""
+                          } 
+%}   
+  
+  {% if interface_config.update({"is_etherchannel": False}) %} {% endif %}
+  
+  {% if interface_config.update({"name": interface.PORT_A}) %} {% endif %}
+  {% if interface_config.update({"type": interface.TYPE}) %} {% endif %}
+  {% if interface_config.update({"status": interface.STATUS}) %} {% endif %}
+  {% if interface_config.update({"vlan": interface.VLAN}) %} {% endif %}
+  {% if interface_config.update({"description": interface.DESCRIPTION}) %} {% endif %}
+    
+  {% for etherchannel in etherchannels.list %}
+  
+    {% if etherchannel.PORT_A == interface.PORT_A %}
+
+       {% if interface_config.update({"is_etherchannel": True}) %} {% endif %}
+       {% if interface_config.update({"etherchannel_number": etherchannel.PORTCHANNEL_A}) %} {% endif %}
+       {% if interface_config.update({"etherchannel_protocol": etherchannel.PROTOCOL}) %} {% endif %}
+
+    {% endif %}
+    
+  {% endfor %} 
+    
+  {% if interface_list.append(interface_config) %} {% endif %}
+  
+{% endfor %} 
+
+{% for interface in interface_list %}
+
+  interface {{ interface.name }}
+  
+  {% if interface.status == "DOWN" %}
+  
+   description >>> FREE <<<
+   switchport mode access
+   switchport access vlan 1
+   shutdown
+  
+  {% else %}
+  
+    description {{ interface.description }}
+    
+    {% if interface.is_etherchannel == True%}
+
+      {% if interface.etherchannel_protocol == "LACP" %}
+      
+       channel-group {{ interface.etherchannel_number }} mode active
+   
+      {% elif interface.etherchannel_protocol == "PAGP" %}
+    
+       channel-group {{ interface.etherchannel_number }} mode desirable
+  
+      {% elif interface.etherchannel_protocol == "ON" %}
+
+       channel-group {{ interface.etherchannel_number }} mode desirable
+  
+      {% endif %}
+   
+    {% else %}
+  
+      switchport mode {{ interface.type }}
+      
+      {% if interface.type == "Trunk" %}
+      
+       switchport trunk allowed vlan {{ interface.vlan }}
+       
+      {% elif interface.type == "Access" %}
+       
+       switchport access vlan {{ interface.vlan }}
+       spanning-tree portfast
+       spanning-tree bpduguard enable
+       device-tracking attach-policy IPDT_POLICY
+       
+      {% endif %}
+ 
+    {% endif %}
+    
+  {% endif %}
+
+{% endfor %}

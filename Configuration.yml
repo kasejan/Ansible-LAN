@@ -1,0 +1,62 @@
+---
+
+- name: LAN Configuration
+  connection: network_cli
+  hosts: core
+  gather_facts: no
+  
+  tasks:
+  
+    - name: MANAGEMENT CONFIGURATION
+      ios_config:
+        src: Templates/Management.j2
+      when: management
+
+#    - name: READ VLAN SETTINGS FROM CSV AND RETURN LIST
+#      community.general.read_csv:
+#        path: Configuration/Vlan.csv
+#        delimiter: ";"
+#        register: vlans
+#        delegate_to: all
+   
+#    - name: VLAN CONFIGURATION
+#      ios_config:
+#        match: none
+#        src: Templates/Vlan.j2
+        
+#    - name: SISF CONFIGURATION
+#      ios_config:
+#        match: none
+#        src: Templates/SISF.j2
+
+#    - name: SISF CONFIGURATION
+#      ios_config:
+#        match: none
+#        src: Templates/STP.j2
+
+#   - name: AAA CONFIGURATION
+#     ios_config:
+#       match: none
+#       src: Templates/AAA.j2
+
+#   - name: READ INTERFACE SETTINGS FROM CSV AND RETURN LIST
+#      community.general.read_csv:
+#        path: Configuration/{{ hostname }}.csv
+#        delimiter: ";"
+#      register: interfaces
+#      delegate_to: all
+
+#    - name: READ ETHERCHANNEL SETTINGS FROM CSV AND RETURN LIST
+#      community.general.read_csv:
+#        path: Configuration/Etherchannel.csv
+#        delimiter: ";"
+#      register: etherchannels
+#     delegate_to: all
+
+      
+#    - name: INTERFACES CONFIGURATION
+#      ios_config:
+#        match: none
+#        src: Templates/Interface.j2
+
+      

@@ -1,0 +1,6 @@
+ansible_host: 10.0.0.3
+hostname: SW-CORE-11
+role: CORE
+inband_mgmt_ip_address: 10.0.0.3
+outofband_mgmt_ip_address: 192.168.1.10
+management: true

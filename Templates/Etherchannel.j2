@@ -1,0 +1,17 @@
+{% for interface in interfaces.list %}
+
+  {% if interface.DEVICE_B == "" %}
+    interface {{ interface.PORT_A }}
+     description >>> FREE <<<
+     switchoport mode access
+     shutdown
+  {% elseif interface.ETHERCHANNEL == "NO" %}
+    interface {{ interface.PORT_A }}
+     description {{ interface.DESCRIPTION}}
+     switchport mode {{ interface.TYPE }}
+  {% else %}
+    interface {{ interface.PORT_A }}
+     channel-group {{ interface.ETHERCHANNEL }} mode 
+  {% endif %}
+
+{% endfor %}

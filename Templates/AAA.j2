@@ -1,0 +1,115 @@
+service password-encryption
+!
+enable secret {{ enableSecret }}
+!
+{% for user in local_user_database %} 
+    
+  username {{ user.username }} privilege {{ user.privilege }} secret {{ user.password }}
+
+{% endfor %}
+!
+aaa new-model
+aaa session-id common
+!
+aaa authentication login default local
+aaa authorization exec default local
+!
+{% if network_aaa.protocol == "local" %}
+  
+  line vty 0 97
+    login authentication default
+    authorization exec default
+
+{% elif network_aaa.protocol == "radius" %}
+
+  {% for radius in network_aaa.radius_servers %} 
+    
+    radius server {{ radius.name }}
+      address ipv4 {{ radius.ip }} auth-port 1812 acct-port 1813
+      timeout 4
+      retransmit 3
+      automate-tester username dummy ignore-acct-port probe-on
+      pac key {{ radius.key }}
+      exit
+      
+  {% endfor %}
+  
+  aaa group server radius NETWORK-RADIUS-GROUP
+    ip radius source-interface {{ network_aaa.radius_source_interface }}
+   
+  {% for radius in network_aaa.radius_servers %}
+  
+    server name {{ radius.name }}
+    
+  {% endfor %}
+  
+  exit
+  
+  aaa authentication login VTY-AUTHEN group NETWORK-RADIUS-GROUP local
+  aaa authorization exec VTY-AUTHOR group NETWORK-RADIUS-GROUP local if-authenticated
+  aaa accounting exec default start-stop group NETWORK-RADIUS-GROUP 
+  aaa accounting update newinfo periodic 2880
+ 
+  radius-server dead-criteria time 5 tries 3
+  radius-server deadtime 3
+  
+  ip radius source-interface {{ network_aaa.radius_source_interface }}
+  
+  line vty 0 97
+    login authentication VTY-AUTHEN
+    authorization exec VTY-AUTHOR
+    exit
+    
+{% elif network_aaa.protocol == "tacacs" %}
+
+  {% for tacacs in network_aaa.tacacs_servers %} 
+    
+    tacacs server {{ tacacs.name }}
+      address ipv4 {{ tacacs.ip }}
+      key {{ tacacs.key }}
+      timeout 4
+      exit
+    
+  {% endfor %}
+  
+ 
+  aaa group server tacacs NETWORK-TACACS-GROUP
+   
+  {% for tacacs in network_aaa.tacacs_servers %}
+  
+    server name {{ tacacs.name }}
+    
+  {% endfor %}
+  
+  exit
+  
+  aaa authentication login VTY-AUTHEN group NETWORK-TACACS-GROUP local
+  aaa authorization exec VTY-AUTHOR group NETWORK-TACACS-GROUP local if-authenticated
+  aaa accounting exec default start-stop group NETWORK-TACACS-GROUP
+  aaa accounting update newinfo periodic 2880
+
+  ip tacacs source-interface {{ network_aaa.tacacs_source_interface }}
+  
+  line vty 0 97
+    login authentication VTY-AUTHEN
+    authorization exec VTY-AUTHOR
+    exit
+   
+{% endif %}
+
+{% if client_aaa.status == "enabled" %}
+  
+  {% if network_aaa.status == "radius" %}
+  
+  
+  
+  
+{% endif %}
+  
+  
+{% endif %}
+
+
+
+
+

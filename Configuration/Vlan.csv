@@ -1,0 +1,16 @@
+NAME;ID;DESCRIPTION
+net-user-lan;100;
+net-user-wifi;108;
+net-wifi-byod;112;
+net-wifi-guest;132;
+net-servers;164;
+net-esxi;168;
+net-embedded;172;
+net-iot;176;
+net-cctv;180;
+net-avmedia;184;
+net-av2-reserve;188;
+net-voice;192;
+net-capwap;350;
+net-wmi;351;
+net-mgmt;352;

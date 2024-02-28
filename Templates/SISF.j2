@@ -1,0 +1,29 @@
+{% set vlanList = {"vlans": ""} %} 
+
+{% for vlan in vlans.list %}
+  
+  {% if vlanList.update({"vlans": vlanList.vlans+vlan.ID+","}) %} {% endif %}
+ 
+{% endfor %}
+
+ {% if vlanList.update({"vlans": vlanList.vlans[:-1]}) %} {% endif %}
+ 
+
+
+!================================================================
+!
+! DHCP SNOOPING
+!
+ip dhcp snooping vlan {{ vlanList.vlans }}
+ip dhcp snooping
+!
+!================================================================
+!
+! DEVICE TRACKING
+!
+device-tracking tracking
+!         
+device-tracking policy IPDT_POLICY
+ no protocol udp
+ tracking enable
+!

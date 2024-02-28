@@ -1,0 +1,82 @@
+ansible_network_os: ios
+ansible_user: ansible
+ansible_ssh_pass: ansible
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+#
+# MTU
+#
+systemMTU: 9100
+#
+# TIME
+#
+ntp_servers:
+  - ntp_server: tik.cesnet.cz
+  - ntp_server: tak.cesnet.cz
+ntp_source_interface: vlan100
+#
+# DNS
+#
+domain: alef.com
+dns_servers:
+  - dns_server: 8.8.8.8
+  - dns_server: 9.9.9.9
+#
+# LOGGING
+#
+loggingServer: 1.1.1.1
+#
+# SNMP
+#
+snmpv3User: sfera
+snmpv3Group: sfera-group
+snmpv3Server: 1.1.1.1
+#
+# SECURITY
+#
+enableSecret: alef
+
+local_user_database:
+  - username: alef
+    password: alef
+    privilege: 15
+  - username: kasej
+    password: Alef123!
+    privilege: 15
+  - username: customer
+    password: Cisco123!
+    privilege: 7
+  - username: ansible
+    password: ansible
+    privilege: 15
+
+network_aaa:
+  protocol: tacacs
+  radius_source_interface: Vlan100
+  radius_servers:
+  - name: RADIUS1
+    ip: 1.1.1.1
+    key: Cisco123!
+  
+  - name: RADIUS2
+    ip: 2.2.2.2
+    key: Cisco123!
+  tacacs_source_interface: Vlan100
+  tacacs_servers:
+  - name: TACACS1
+    ip: 1.1.1.1
+    key: Cisco123!
+    
+  - name: TACACS2
+    ip: 2.2.2.2
+    key: Cisco123!
+
+client_aaa:
+  - status: enable/disable
+  - radius_servers:
+  - name: RADIUS1
+    ip: 1.1.1.1
+    key: Cisco123!
+  
+  - name: RADIUS2
+    ip: 2.2.2.2
+    key: Cisco123!

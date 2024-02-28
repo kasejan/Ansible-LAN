@@ -1,0 +1,8 @@
+spanning-tree mode rapid-pvst
+spanning-tree loopguard default
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+{% if role == "CORE" %}
+spanning-tree vlan 1-4094 root primary 
+{% endif %}

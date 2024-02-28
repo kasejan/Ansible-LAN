@@ -1,0 +1,86 @@
+!
+!================================================================
+!
+! SYSTEM
+!
+hostname {{ hostname }}
+system mtu {{ systemMTU }}
+!
+!================================================================
+!
+! TIME
+!
+!
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+clock timezone CET 1 0
+clock summer-time CEST recurring last Sun Mar 2:00 last Sun Oct 3:00
+{% for ntp_server in ntp_servers %} 
+  ntp server {{ ntp_server.ntp_server }}
+{% endfor %}
+!
+ntp source {{ ntp_source_interface }}
+!
+!================================================================
+!
+! DNS
+!
+no ip domain lookup
+ip domain name {{ domain }}
+no ip name-server
+
+{% for dns_server in dns_servers %} 
+  ip name-server {{ dns_server.dns_server }}
+{% endfor %}
+!
+!================================================================
+!
+! PROTOCOLS
+!
+vtp mode off
+lldp run
+cdp run
+no ip http server
+no ip http secure-server
+ip ssh version 2
+ip scp server enable
+!
+!================================================================
+!
+! LINES
+!
+line con 0
+ logging synchronous
+ stopbits 1
+line vty 0 97
+ exec-timeout 60 0
+ logging synchronous
+ transport input ssh
+!
+!================================================================
+!
+! LOGGING
+!
+logging trap debugging
+logging buffered 100000
+!logging source-interface Loopback0
+!logging host {{ loggingServer }}
+!
+!================================================================
+!
+! SNMP
+!
+snmp-server user {{ snmpv3User}} {{ snmpv3Group }} v3 auth sha Jih4vYnuSGMOrj4eOcjE priv aes 128 zhexaZusCWDRtusVmhzm
+snmp-server group {{ snmpv3Group }} v3 priv read All-View notify All-View 
+snmp-server view All-View iso included
+snmp-server location Sfera_Pardubice
+snmp-server enable traps
+!snmp-server host {{ snmpv3Server }} version 3 priv {{ snmpv3User}}
+no snmp mib flash cache
+!
+!================================================================
+!
+! ERRDISABLE
+!
+errdisable recovery cause all
+errdisable recovery interval 60

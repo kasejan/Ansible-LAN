@@ -1,0 +1,9 @@
+---
+all:
+  children:
+    core:
+      hosts:
+        SW-CORE-1
+    access:
+      hosts:
+        SW-ACCESS-1
