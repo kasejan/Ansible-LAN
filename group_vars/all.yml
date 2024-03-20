@@ -9,6 +9,7 @@ systemMTU: 9100
 #
 # TIME
 #
+ntp_config: yes
 ntp_servers:
   - ntp_server: tik.cesnet.cz
   - ntp_server: tak.cesnet.cz
@@ -16,6 +17,7 @@ ntp_source_interface: vlan100
 #
 # DNS
 #
+domain_config: yes
 domain: alef.com
 dns_servers:
   - dns_server: 8.8.8.8
@@ -23,7 +25,14 @@ dns_servers:
 #
 # LOGGING
 #
-loggingServer: 1.1.1.1
+logging_config: yes
+logging_buffer_level: debugging
+logging_buffer_size: 100000
+logging_trap_level: debugging
+logging_hosts:
+  - logging_host: 1.1.1.1
+  - logging_host: 2.2.2.2
+logging_source_interface: vlan100
 #
 # SNMP
 #

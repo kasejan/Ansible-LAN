@@ -2,15 +2,26 @@
 
 - name: LAN Configuration
   connection: network_cli
-  hosts: core
+  hosts: access
   gather_facts: no
   
   tasks:
   
-    - name: MANAGEMENT CONFIGURATION
+    - name: TIME CONFIGURATION
       ios_config:
-        src: Templates/Management.j2
-      when: management
+        src: Templates/time.j2
+      when: ntp_config
+
+    - name: DOMAIN CONFIGURATION
+      ios_config:
+        src: Templates/domain.j2
+      when: domain_config
+
+    - name: LOGGING CONFIGURATION
+      ios_config:
+        src: Templates/logging.j2
+      when: logging_config
+
 
 #    - name: READ VLAN SETTINGS FROM CSV AND RETURN LIST
 #      community.general.read_csv:

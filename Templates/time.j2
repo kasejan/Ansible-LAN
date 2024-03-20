@@ -1,0 +1,17 @@
+!================================================================
+!
+! TIME CONFIGURATION
+!
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
+!
+clock timezone CET 1 0
+clock summer-time CEST recurring last Sun Mar 2:00 last Sun Oct 3:00
+!
+{% for ntp_server in ntp_servers %} 
+    ntp server {{ ntp_server.ntp_server }}
+{% endfor %}
+!
+{% if ntp_source_interface %}
+    ntp source {{ ntp_source_interface }}
+{% endif %}

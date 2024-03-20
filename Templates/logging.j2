@@ -1,0 +1,15 @@
+!================================================================
+!
+! LOGGING CONFIGURATION
+!
+logging buffered {{ logging_buffer_level }}
+logging buffered {{ logging_buffer_size }}
+logging trap {{ logging_trap_level }}
+!
+{% if logging_source_interface %}
+    logging source-interface {{ logging_source_interface }}
+{% endif %}
+!
+{% for logging_host in logging_hosts %} 
+    logging host {{ logging_host.logging_host }}
+{% endfor %}
